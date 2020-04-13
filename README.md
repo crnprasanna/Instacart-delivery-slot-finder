@@ -30,13 +30,13 @@ This tool was created to help people who are at high risk and those needy ones (
 
 # Limitations:
 
-1. Supports email based login with credentials (ie) It doesn't support google / facebook based login
+1. Supports email based login with credentials for Instacart login (ie) It doesn't support google / facebook based login
 
 2. Preconfigure your home / delivery address in your instacart account once (ie) It doesn't support custom address check through this script
 
 3. Checks for "Delivery" slots only (ie) Pickup slots are not supported
 
-4. Supports GMAIL based notifications only
+4. Supports GMAIL based notifications only (If you don't wish to get gmail notification, you may still find status from logs)
 
 
 # How to use the tool 
@@ -45,7 +45,7 @@ This tool was created to help people who are at high risk and those needy ones (
 
 	a. STORE_LIST = ['costco', 'safeway'] => Your desired stores, you can add as many as you want to check from the supported stores list.
 
-		Current supported stores are (Just randomly tested! ):
+		Current supported stores are (Just randomly tested in my area! ):
 			1. 'lucky-supermarkets'
 			2. 'costco'
 			3. 'safeway'
@@ -61,6 +61,8 @@ This tool was created to help people who are at high risk and those needy ones (
 			13. 'raleys'
 			14. 'foodsco'
 			15. 'piazzas-fine-foods'
+			
+	** Note : If your local store is not supported, please let me know through comments
 
 	b. Provide your instacart login details. 
   
@@ -70,22 +72,27 @@ This tool was created to help people who are at high risk and those needy ones (
 		Note: Only email based logins work, facebook / google based logins will not work
 		
 	c. Receiving email notification:
-  
-		If you wish to receive email notification, you need to configure below fields
+	
+		SEND_GMAIL = True  # Options : True or False
 		
-		If you want to skip email configuration, you will still get the logs printed on console and in log file under 'logs/' directory
+		Note: 
 		
-		SEND_GMAIL = True
+		a. If you set the option "SENG_GMAIL = False", 
+			- you won't get email notifications 
+			- you will get the status printed on console and in log file under 'logs/' directory
+			- you can leave the below fields as is (SENDER_GMAIL_ID, SENDER_GMAIL_PASS, RECEIVER_EMAIL_ID
+		
 		SENDER_GMAIL_ID = "<YOUR_GMAIL_ID>"
 		SENDER_GMAIL_PASS = "<YOUR_GMAIL_PASSWORD/App specific password>"
 		RECEIVER_EMAIL_ID = "<EMAIL_ID_TO_RECIVE_NOTIFICATIONS>"
 		
-		If you have enabled Two factor authenticatoin, you can proivide App specific password generated, follow : https://support.google.com/accounts/answer/185833?hl=en
-		If you don't enabled 2FA, then you need to provide gmail password and need to 
-		turn on "allow less secure apps from your gmail id" 
-		#Steps:
-		#1. GOTO : https://myaccount.google.com/u/0/lesssecureapps?pageId=none
-		#2. Turn on : "Allow less secure apps"
+		b. If you have set the option "SENG_GMAIL = True",  
+			 - You will get email notifications, provided have configured below details
+			 - If you have enabled Two factor authentication in your gmail account, you can proivide App specific password generated, follow : https://support.google.com/accounts/answer/185833?hl=en
+			 - If you haven't enabled 2FA, then you need to provide gmail password and need to turn on "allow less secure apps from your gmail id" 
+				#Steps:
+				#1. GOTO : https://myaccount.google.com/u/0/lesssecureapps?pageId=none
+				#2. Turn on : "Allow less secure apps"
 
 
 
@@ -148,10 +155,15 @@ Note: As I don't have personal macbook, I can't able to test. If you have one, p
 
 1. If the previous session was terminated abrubptly / incorrectly, subsequent script exeuction may cause incorrect results
 	
-	- I have handled this issue (using signal handlers), but still I get this issue in rare times (may be 1 in 50 exeuctions)
+	- I have handled this issue (using signal handlers), but still I get this issue in rare times (may be 1 in 20 exeuctions)
+	
+2. Random times, you may see "UNHANDLED ERROR" or "RUNTIME Error"
+	Fix : Just restart the execution
 	
 # Disclaimer:
 
 	No guarantee that you will get the slots as reported by tool, as the slot booking happens at realtime.
+	
+	Script may take longer time find slots as I don't have any control over Instacart slot availbality logic.
 
 	This tools is for personnal-noncommercial use only.
