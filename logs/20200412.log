@@ -1,0 +1,22 @@
+##########################################
+(19:58:45) root | Going to init browser
+(19:58:45) root | Input Config:
+(19:58:45) root | 	Chrome driver path: C:\Users\user\Downloads\chromedriver_win32\chromedriver.exe
+(19:58:45) root | 	Stores List: ['costco']
+(19:58:45) root | 	Instacart Login: xxxx@gmail.com
+(19:58:45) root | 	SEND_GMAIL report: True
+(19:58:45) root | 
+##########################################
+(19:58:56) root | Attempting to login...
+(19:59:04) root | Login succeeded
+(19:59:04) root | Starting new loop
+(19:59:04) root | Going to find slots for - costco...
+(19:59:56) root | 
+(19:59:56) root | costco slots :
+(19:59:56) root | 	<YOUR_ADDRESS_1> : Arrives Tomorrow - Apr 16
+
+(19:59:56) root | Sending email notification
+(20:00:22) root | SIGINT or CTRL-C detected. Exiting gracefully
+(20:00:25) root | Connection ended
+(20:00:25) root | 
+##########################################

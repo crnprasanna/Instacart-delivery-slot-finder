@@ -53,6 +53,14 @@ This tool was created to help people who are at high risk and those needy ones (
 			5. 'sprouts'
 			6. 'cvs'
 			7. 'bevmo'
+			8. 'sigonas-farmers-market'
+			9. 'rainbow-grocery'
+			10. 'smart-final'
+			11. 'petco'
+			12. 'total-wine-more'
+			13. 'raleys'
+			14. 'foodsco'
+			15. 'piazzas-fine-foods'
 
 	b. Provide your instacart login details. 
   
