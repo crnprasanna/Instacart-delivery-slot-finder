@@ -71,7 +71,9 @@ This tool was created to help people who are at high risk and those needy ones (
 		
 	c. Receiving email notification:
   
-		If you wish to receive email notification, you need to configure below fields (By default, the status will be printed on console and in log file under 'logs/' directory)
+		If you wish to receive email notification, you need to configure below fields
+		
+		If you want to skip email configuration, you will still get the logs printed on console and in log file under 'logs/' directory
 		
 		SEND_GMAIL = True
 		SENDER_GMAIL_ID = "<YOUR_GMAIL_ID>"
@@ -94,7 +96,12 @@ This tool was created to help people who are at high risk and those needy ones (
 		> python3 ./instacart_slot_finder.py
 		
 
-3. Logs:
+3. Stopping the script:
+
+	By default, the script will run on loop indefinitely, if you want to stop execution, you can press 'ctrl + c'
+		
+
+4. Logs:
 	
 	Logs will be generated under logs/ folder
 	
@@ -139,8 +146,9 @@ Note: As I don't have personal macbook, I can't able to test. If you have one, p
 	
 # Known Issues:
 
-1. If the previous session was terminated abrubptly / incorrectly, the next run will not produce corect results
-	- I have used signal handlers to fix this issue, still finding this issue at the rate of 1 in 50 exeuctions.
+1. If the previous session was terminated abrubptly / incorrectly, subsequent script exeuction may cause incorrect results
+	
+	- I have handled this issue (using signal handlers), but still I get this issue in rare times (may be 1 in 50 exeuctions)
 	
 # Disclaimer:
 
