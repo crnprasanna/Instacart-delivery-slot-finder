@@ -2,7 +2,7 @@
 A Windows / Linux based python module to find Instacart slots and email you the status
 
 # Inspirations:
-Myself I was stuck with COVID-19 pandaemic at home and started looking online grocery delivery services like Instacart and other similar platforms. 
+Personally I was stuck with COVID-19 pandaemic at home for getting my day to day essentials and started looking online grocery delivery services like Instacart and other similar platforms. 
 
 One challange with those platforms is finding slots in my area due to surge in demand for those services and it's nearly impossible for me to get a slot.
 
@@ -19,13 +19,14 @@ This tool was created to help people who are at high risk and those needy ones (
 	  
 2. Ubuntu:
 	
-          sudo ./install_ubuntu.sh
-          **Caution: This tool will auto upgrade chrome to latest version, if not installed on the host pc already
+          sudo ./install_ubuntu.sh # under 'install/' directory
+          **Note : This tool will auto upgrade chrome to latest version, if not installed on the host pc already
 	
   
 3. Installing python modules:
 
           pip3 install -r requirements.txt
+		  
 
 # Limitations:
 
@@ -62,19 +63,60 @@ This tool was created to help people who are at high risk and those needy ones (
 		
 	c. Receiving email notification:
   
-		If you wish to receive email notification, you need to configure below fields (By default, the status will be printed on console and in log file under logs/ dir)
-			SEND_GMAIL = True
-			SENDER_GMAIL_ID = "<YOUR_GMAIL_ID>"
-			SENDER_GMAIL_PASS = "<YOUR_GMAIL_PASSWORD/App specific password>"
-			RECEIVER_EMAIL_ID = "<EMAIL_ID_TO_RECIVE_NOTIFICATIONS>"
-			
-			If you have enabled Two factor authenticatoin, you can proivide App specific password generated, follow : https://support.google.com/accounts/answer/185833?hl=en
-			If you don't enabled 2FA, then you need to provide gmail password and need to 
-			turn on "allow less secure apps from your gmail id" 
-			#Steps:
-			#1. GOTO : https://myaccount.google.com/u/0/lesssecureapps?pageId=none
-			#2. Turn on : "Allow less secure apps"
+		If you wish to receive email notification, you need to configure below fields (By default, the status will be printed on console and in log file under 'logs/' directory)
+		
+		SEND_GMAIL = True
+		SENDER_GMAIL_ID = "<YOUR_GMAIL_ID>"
+		SENDER_GMAIL_PASS = "<YOUR_GMAIL_PASSWORD/App specific password>"
+		RECEIVER_EMAIL_ID = "<EMAIL_ID_TO_RECIVE_NOTIFICATIONS>"
+		
+		If you have enabled Two factor authenticatoin, you can proivide App specific password generated, follow : https://support.google.com/accounts/answer/185833?hl=en
+		If you don't enabled 2FA, then you need to provide gmail password and need to 
+		turn on "allow less secure apps from your gmail id" 
+		#Steps:
+		#1. GOTO : https://myaccount.google.com/u/0/lesssecureapps?pageId=none
+		#2. Turn on : "Allow less secure apps"
 
+
+
+2. Executing the script:
+		
+		Note : Make sure you have updated settings.py
+		
+		> python3 ./instacart_slot_finder.py
+		
+
+3. Logs:
+	
+	Logs will be generated under logs/ folder
+	
+	Also, logs will be printed on console
+	
+		
+# Sample Output: 
+
+	##########################################
+	(19:58:45) root | Going to init browser
+	(19:58:45) root | Input Config:
+	(19:58:45) root | 	Chrome driver path: C:\Users\user\Downloads\chromedriver_win32\chromedriver.exe
+	(19:58:45) root | 	Stores List: ['costco']
+	(19:58:45) root | 	Instacart Login: xxxx@gmail.com
+	(19:58:45) root | 	SEND_GMAIL report: True
+	(19:58:45) root | 
+	##########################################
+	(19:58:56) root | Attempting to login...
+	(19:59:04) root | Login succeeded
+	(19:59:04) root | Starting new loop
+	(19:59:04) root | Going to find slots for - costco...
+	(19:59:56) root | 
+	(19:59:56) root | costco slots :
+	(19:59:56) root | 	<YOUR_ADDRESS_1> : Arrives Tomorrow - Apr 16
+
+	(19:59:56) root | Sending email notification
+	(20:00:22) root | SIGINT or CTRL-C detected. Exiting gracefully
+	(20:00:25) root | Connection ended
+	(20:00:25) root | 
+	##########################################
 
 # Tested platforms:
 Tested on Windows 10 and Ubuntu 16.04
@@ -94,6 +136,6 @@ Note: As I don't have personal macbook, I can't able to test. If you have one, p
 	
 # Disclaimer:
 
-	No guarantee that you will get the slots as reported by tool, as the slot booking happens at realtime online.
+	No guarantee that you will get the slots as reported by tool, as the slot booking happens at realtime.
 
 	This tools is for personnal-noncommercial use only.
