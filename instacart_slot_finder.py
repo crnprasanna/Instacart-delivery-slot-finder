@@ -14,8 +14,9 @@ import smtplib
 from email.mime.text import MIMEText
 import timeout
 from signal import signal, SIGINT
-from sys import exit
+import sys
 from datetime import datetime, timedelta
+import timeout_decorator
 
 
 class InstaSlotFinder:
@@ -61,7 +62,7 @@ class InstaSlotFinder:
 		self.log_msg(msg)
 		self.close_connection()
 
-		exit(0)
+		sys.exit(0)
 
 	@timeout.custom_decorator
 	def start_browser(self):
@@ -83,6 +84,7 @@ class InstaSlotFinder:
 		except Exception as err:
 			self.logger.log('BROWSER CANT LAUNCH, err {}\n'.format(err))
 			self.close_connection()
+			sys.exit(0)
 
 		self.logger.log('Attempting to login...')
 		try:
@@ -91,8 +93,9 @@ class InstaSlotFinder:
 			self.logger.log('LOGIN ERROR, CHECK CREDENTIALS, err: {}\n'.format(
 				err))
 			self.close_connection()
-
-		self.logger.log('Login succeeded')
+			sys.exit(0)
+		else:
+			self.logger.log('Login succeeded')
 
 	def __validate_store__(self):
 		self.store_list = settings.STORE_LIST.copy()
@@ -153,10 +156,15 @@ class InstaSlotFinder:
 			'//*[@id="header"]/div/div/div[4]/div[2]/div[2]/span/a/span'
 		try:
 			status = self.browser.find_element_by_xpath(xpath).text
+		except timeout_decorator.TimeoutError:
+			self.logger.log("TIMEOUT ERROR WITH CHECK_DELIVERY_SLOT")
+			self.close_connection()
+			raise RuntimeError("Restart program")
 		except Exception as err:
-			self.logger.log('UNHANDLED ERROR WITH CHECK_DELIVERY_SLOT, \
+			self.logger.log('RUNTIME ERROR WITH CHECK_DELIVERY_SLOT, \
 			Err: {}'.format(err))
 			self.close_connection()
+			raise RuntimeError("Restart program")
 
 		return ('NO_SLOT' if self.no_slot_msg in status else status)
 
@@ -171,10 +179,16 @@ class InstaSlotFinder:
 							if x.text and ',' in x.text]
 
 			return address_book
+		except timeout_decorator.TimeoutError:
+			self.logger.log('TIMEOUT ERROR WITH GET_ADDRESS_BOOK \
+			Index {}'.format(default_index))
+			self.close_connection()
+			raise RuntimeError("Restart program")
 		except Exception as err:
-			self.logger.log('UNHANDLED ERROR WITH GET_ADDRESS_BOOK Index {}, \
+			self.logger.log('RUNTIME ERROR WITH GET_ADDRESS_BOOK Index {}, \
 			Err: {}'.format(default_index, err))
 			self.close_connection()
+			raise RuntimeError("Restart program")
 
 	def log_msg(self, msg):
 		self.logger.log(msg)
@@ -197,6 +211,7 @@ class InstaSlotFinder:
 			self.server.sendmail(settings.SENDER_GMAIL_ID,
 								 settings.RECEIVER_EMAIL_ID,
 								 msg.as_string())
+			self.logger.log("Email notification succesfully sent")
 		except Exception as err:
 			self.logger.log('Exception with sending email, err : {}'.format(
 				err))
@@ -222,6 +237,7 @@ class InstaSlotFinder:
 		except Exception as err:
 			self.logger.log('NO ADDRESS FOUND IN INSTACART ACCOUNT')
 			self.close_connection()
+			sys.exit(0)
 
 	@timeout.custom_decorator
 	def __find_slot_curr_addr__(self, def_index, curr_index):
@@ -236,64 +252,78 @@ class InstaSlotFinder:
 
 			self.browser.find_elements_by_tag_name('button')[def_index].click()
 			time.sleep(0.5)
+		except timeout_decorator.TimeoutError:
+			self.logger.log('TIMEOUT ERROR WITH FINDING SLOT CURR ADDR {}, \
+			DEF ADDR {}'.format(curr_index, def_index))
+			self.close_connection()
+			raise RuntimeError("Restart program")
 		except Exception as err:
-			self.logger.log('RUNTIME ERROR WITH FINDING SLOT CURR ADDR {}, \
+			self.logger.log('RUNTIME ERROR WITH FIND SLOT CURR ADDR {}, \
 			DEF ADDR {}, Err: {}'.format(curr_index, def_index, err))
 			self.close_connection()
+			raise RuntimeError("Restart program")
 
 	@timeout.custom_decorator
 	def find_slots(self):
 		self.slots_dict = {}
 		num_address = 0
 		default_address_id = None
+		
+		try:
+			for store in self.store_list:
+				self.slots_dict[store] = ''
+				self.delivery_slot = []
 
-		for store in self.store_list:
-			self.slots_dict[store] = ''
-			self.delivery_slot = []
+				url = self.store_url.replace('costco', store)
 
-			url = self.store_url.replace('costco', store)
+				self.logger.log('Going to find slots for - {}...'.format(store))
+				self.browser.get(url)
+				time.sleep(10)
 
-			self.logger.log('Going to find slots for - {}...'.format(store))
-			self.browser.get(url)
-			time.sleep(10)
+				(default_address_id, default_address) = \
+					self.__get_default_slot__()
 
-			(default_address_id, default_address) = \
-				self.__get_default_slot__()
+				self.delivery_slot.append(
+					(default_address, self.__check_delivery_slot__()))
 
-			self.delivery_slot.append(
-				(default_address, self.__check_delivery_slot__()))
+				num_address = self.__get_address_book__(default_address_id)
 
-			num_address = self.__get_address_book__(default_address_id)
+				if len(num_address) > 1:
+					for (button_id, address) in num_address:
+						if default_address[:10] != address[:10]:
+							
+							self.__find_slot_curr_addr__(
+								default_address_id, button_id)
 
-			if len(num_address) > 1:
-				for (button_id, address) in num_address:
-					if default_address[:10] != address[:10]:
-						
-						self.__find_slot_curr_addr__(
-							default_address_id, button_id)
-
-			self.slots_dict[store] = self.delivery_slot.copy()
+				self.slots_dict[store] = self.delivery_slot.copy()
+		except Exception:
+			self.close_connection()
+			raise RuntimeError("Restart program")
 
 	@timeout.custom_decorator
 	def log_results(self):
 		self.logger.log()
 		self.slots_result = ''
 		slot_found_once = False
+		
+		try:
+			for (store, slot) in self.slots_dict.items():
+				self.logger.log('{} slots :'.format(store))
+				self.slots_result += '{} slots :\n'.format(store)
 
-		for (store, slot) in self.slots_dict.items():
-			self.logger.log('{} slots :'.format(store))
-			self.slots_result += '{} slots :\n'.format(store)
+				slot.sort()
 
-			slot.sort()
+				for (addr, info) in slot:
+					self.logger.log('\t{} : {}'.format(addr, info))
+					self.slots_result += '\t{} : {}\n'.format(addr, info)
 
-			for (addr, info) in slot:
-				self.logger.log('\t{} : {}'.format(addr, info))
-				self.slots_result += '\t{} : {}\n'.format(addr, info)
-
-				if not slot_found_once and info != 'NO_SLOT':
-					slot_found_once = True
-			self.logger.log()
-			self.slots_result += '\n'
+					if not slot_found_once and info != 'NO_SLOT':
+						slot_found_once = True
+				self.logger.log()
+				self.slots_result += '\n'
+		except Exception:
+			self.close_connection()
+			raise RuntimeError("Restart program")
 
 		return slot_found_once
 
@@ -312,10 +342,13 @@ class InstaSlotFinder:
 			self.logger.log('Connection ended')
 		
 		if self.server:
-			self.server.quit()
+			try:
+				self.server.quit()
+			except Exception:
+				pass
 
 		self.logger.log('\n##########################################')
-		exit(1)
+		
 
 
 if __name__ == '__main__':
@@ -325,7 +358,7 @@ if __name__ == '__main__':
 		msg = 'SIGINT or CTRL-C detected in main. Exiting gracefully'
 		slot_finder.log_msg(msg)
 		slot_finder.close_connection()
-		exit(0)
+		sys.exit(0)
 
 	signal(SIGINT, handler)
 
@@ -333,30 +366,26 @@ if __name__ == '__main__':
 	slot_finder.start_browser()
 
 	INTERVAL_BETWEEN_LOOPS = 60  # sec
-	HEARTBEAT_PERIOD = 60  # mins
-	slot_found_last_run = False
-	heartbeat = datetime.now()
 
 	while True:
 
 		slot_finder.log_msg('Starting new loop')
-		slot_finder.find_slots()
-		is_slot_found = slot_finder.log_results()
-
-		ticks = (datetime.now() - heartbeat) \
-			/ timedelta(minutes=HEARTBEAT_PERIOD)
+		try:
+			slot_finder.find_slots()
+			is_slot_found = slot_finder.log_results()
+		except RuntimeError:
+			slot_finder.log_msg('\nCreating new instance..\n')
+			slot_finder = InstaSlotFinder()
+			slot_finder.start_browser()
+			continue
+			
 		if is_slot_found:
-			if ticks > 1 or not slot_found_last_run:
-				slot_finder.log_msg('Sending email notification')
-				slot_finder.send_email(is_slot_found)
-				slot_found_last_run = True
-
-			if ticks > 1:
-				heartbeat = datetime.now()
-		else:
-			slot_found_last_run = False
+			slot_finder.log_msg('Slot found...')
+			slot_finder.send_email(is_slot_found)
+			break
 
 		slot_finder.refresh_browser()
 		time.sleep(INTERVAL_BETWEEN_LOOPS)
 
 	slot_finder.close_connection()
+	slot_finder.log_msg('Program ended\n')
