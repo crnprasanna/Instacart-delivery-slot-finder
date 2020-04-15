@@ -374,7 +374,7 @@ if __name__ == '__main__':
 		try:
 			slot_finder.find_slots()
 			is_slot_found = slot_finder.log_results()
-		except RuntimeError:
+		except Exception:
 			slot_finder.log_msg('\nCreating new instance..\n')
 			slot_finder = InstaSlotFinder()
 			slot_finder.start_browser()
