@@ -15,7 +15,6 @@ from email.mime.text import MIMEText
 import timeout
 from signal import signal, SIGINT
 import sys
-from datetime import datetime, timedelta
 import timeout_decorator
 
 
@@ -30,9 +29,7 @@ class InstaSlotFinder:
 		self.delivery_slot = []
 		self.slots_result = ''
 		self.browser = None
-		self.server = None
 
-		self.server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
 		self.supported_store_list = [
 			'costco',
 			'lucky-supermarkets',
@@ -41,7 +38,7 @@ class InstaSlotFinder:
 			'sprouts',
 			'cvs',
 			'bevmo',
-			'sigonas-farmers-market', 
+			'sigonas-farmers-market',
 			'rainbow-grocery',
 			'smart-final',
 			'petco',
@@ -105,7 +102,7 @@ class InstaSlotFinder:
 				self.logger.log('Store {} not supported yet, will skip for \
 				this store'.format(store))
 				self.store_list.remove(store)
-				
+
 		if not self.store_list:
 			raise Exception("No valid stores to check slots for..")
 
@@ -175,7 +172,7 @@ class InstaSlotFinder:
 			time.sleep(0.5)
 
 			address_book = [(i, x.text) for (i, x) in
-							enumerate(self.browser.find_elements_by_tag_name('button')) 
+							enumerate(self.browser.find_elements_by_tag_name('button'))
 							if x.text and ',' in x.text]
 
 			return address_book
@@ -204,38 +201,48 @@ class InstaSlotFinder:
 
 		msg['From'] = settings.SENDER_GMAIL_ID
 		msg['To'] = settings.RECEIVER_EMAIL_ID
+		server = None
 
 		try:
-			self.server.login(settings.SENDER_GMAIL_ID,
+			server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+			server.login(settings.SENDER_GMAIL_ID,
 							  settings.SENDER_GMAIL_PASS)
-			self.server.sendmail(settings.SENDER_GMAIL_ID,
+			server.sendmail(settings.SENDER_GMAIL_ID,
 								 settings.RECEIVER_EMAIL_ID,
 								 msg.as_string())
+
 			self.logger.log("Email notification succesfully sent")
 		except Exception as err:
 			self.logger.log('Exception with sending email, err : {}'.format(
 				err))
-			self.logger.log('Continuing finding slots.. check status from \
-			console logs...')
+
+		if server:
+			try:
+				server.quit()
+			except Exception:
+				pass
 
 	@timeout.custom_decorator
 	def __get_default_slot__(self):
+
 		try:
 			def_addr_lst = [(i, x.text) for (i, x) in
-							enumerate(self.browser.find_elements_by_tag_name('button')) 
+							enumerate(self.browser.find_elements_by_tag_name('button'))
 							if x.text and len(x.text.split(' ')) > 2]
+
 			if len(def_addr_lst) > 1:
 				self.logger.log("Runtime error, found num_address : {}, \
 				expected: 1".format(def_addr_lst))
 				self.close_connection()
 			else:
+				time.sleep(2)
 				def_addr_index = def_addr_lst[0][0]
 				def_addr = \
 					self.browser.find_elements_by_tag_name(
 						'button')[def_addr_index].text
 				return (def_addr_index, def_addr)
 		except Exception as err:
-			self.logger.log('NO ADDRESS FOUND IN INSTACART ACCOUNT')
+			self.logger.log('NO ADDRESS FOUND IN INSTACART ACCOUNT, err: {}'.format(err))
 			self.close_connection()
 			sys.exit(0)
 
@@ -268,7 +275,7 @@ class InstaSlotFinder:
 		self.slots_dict = {}
 		num_address = 0
 		default_address_id = None
-		
+
 		try:
 			for store in self.store_list:
 				self.slots_dict[store] = ''
@@ -291,7 +298,7 @@ class InstaSlotFinder:
 				if len(num_address) > 1:
 					for (button_id, address) in num_address:
 						if default_address[:10] != address[:10]:
-							
+
 							self.__find_slot_curr_addr__(
 								default_address_id, button_id)
 
@@ -305,7 +312,7 @@ class InstaSlotFinder:
 		self.logger.log()
 		self.slots_result = ''
 		slot_found_once = False
-		
+
 		try:
 			for (store, slot) in self.slots_dict.items():
 				self.logger.log('{} slots :'.format(store))
@@ -335,20 +342,14 @@ class InstaSlotFinder:
 		if self.browser:
 			self.browser.refresh()
 			time.sleep(1)
-			
+
 	def close_connection(self):
 		if self.browser:
 			self.browser.quit()
 			self.logger.log('Connection ended')
-		
-		if self.server:
-			try:
-				self.server.quit()
-			except Exception:
-				pass
 
 		self.logger.log('\n##########################################')
-		
+
 
 
 if __name__ == '__main__':
@@ -378,7 +379,7 @@ if __name__ == '__main__':
 			slot_finder = InstaSlotFinder()
 			slot_finder.start_browser()
 			continue
-			
+
 		if is_slot_found:
 			slot_finder.log_msg('Slot found...')
 			slot_finder.send_email(is_slot_found)
