@@ -112,7 +112,7 @@ class InstaSlotFinder:
 		options = webdriver.ChromeOptions()
 		options.add_argument('--headless')
 		options.add_argument('log-level=3')
-		options.add_argument('--window-size=1920x1080')
+		options.add_argument('window-size=1920,1080')
 		options.add_argument('--no-sandbox')
 		options.add_argument('--single-process')
 
@@ -126,12 +126,12 @@ class InstaSlotFinder:
 							 desired_capabilities=capabilities)
 		self.browser.delete_all_cookies()
 		self.browser.get(self.url)
-		time.sleep(3)
+		time.sleep(10)
 
 	@timeout.custom_decorator
 	def __login_insta_account__(self):
 		self.browser.find_element_by_link_text('Log in').click()
-		time.sleep(1)
+		time.sleep(3)
 		xpath = '//*[@id="nextgen-authenticate.all.log_in_email"]'
 		self.browser.find_element_by_xpath(xpath).send_keys(
 			settings.INSTA_LOGIN_EMAIL)
@@ -144,7 +144,7 @@ class InstaSlotFinder:
 		login_title = self.browser.title
 		xpath = '//*[@id="main-content"]/div[2]/form/div[3]/button'
 		self.browser.find_element_by_xpath(xpath).click()
-		time.sleep(3)
+		time.sleep(10)
 		if login_title == self.browser.title:
 			raise Exception("Check instacart username/password")
 
