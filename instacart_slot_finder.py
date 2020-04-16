@@ -231,6 +231,8 @@ class InstaSlotFinder:
 							enumerate(self.browser.find_elements_by_tag_name('button'))
 							if x.text and len(x.text.split(' ')) > 2]
 
+			time.sleep(1)
+
 			if len(def_addr_lst) > 1:
 				self.logger.log("Runtime error, found num_address : {}, \
 				expected: 1".format(def_addr_lst))
@@ -238,6 +240,8 @@ class InstaSlotFinder:
 			else:
 				time.sleep(2)
 				def_addr_index = def_addr_lst[0][0]
+				time.sleep(1)
+
 				def_addr = \
 					self.browser.find_elements_by_tag_name(
 						'button')[def_addr_index].text

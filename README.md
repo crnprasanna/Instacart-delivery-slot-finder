@@ -6,9 +6,18 @@ Personally I was stuck with COVID-19 pandaemic at home for getting my day to day
 
 One challange with those platforms is finding slots in my area due to surge in demand for those services and it's nearly impossible for me to get a slot.
 
-When checking with my friends and colleagues, I found most of us have the same problem and it's worse for elderly people as I got to know that they have to visit local stores for their daily essentials.
+When checking with my friends and colleagues, I found most of us have the same problem.
 	
 This tool was created to help people who are at high risk and those needy ones (including myself)
+
+
+# Cloning repro
+
+      git clone https://github.com/crnprasanna/Instacart-delivery-slot-finder.git
+      
+      Note: Make sure you get latest changes running command "git pull" before running each time
+
+
 	
 # Installation:
 
@@ -153,12 +162,8 @@ Note: As I don't have personal macbook, I can't able to test. If you have one, p
 	
 # Known Issues:
 
-1. If the previous session was terminated abrubptly / incorrectly, subsequent script exeuction may cause incorrect results
-	
-	- I have handled this issue (using signal handlers), but still I get this issue in rare times (may be 1 in 20 exeuctions)
-	
-2. Random times, you may see "UNHANDLED ERROR" or "RUNTIME Error"
-	Fix : Just restart the execution
+	NA
+
 	
 # Disclaimer:
 
