@@ -21,7 +21,7 @@ import timeout_decorator
 class InstaSlotFinder:
 
 	def __init__(self):
-		self.url = 'https://www.instacart.com'
+		self.url = 'https://www.instacart.com/'
 		self.store_url = \
 			'https://www.instacart.com/store/costco/storefront'
 		self.no_slot_msg = 'See delivery times'
@@ -87,9 +87,8 @@ class InstaSlotFinder:
 		self.logger.log('Attempting to login...')
 		try:
 			self.__login_insta_account__()
-		except Exception as err:
-			self.logger.log('LOGIN ERROR, CHECK CREDENTIALS, err: {}\n'.format(
-				err))
+		except Exception as err:			
+			self.logger.log('LOGIN ERROR, CHECK CREDENTIALS, err: {}\n'.format(err))				
 			self.close_connection()
 			sys.exit(0)
 		else:
@@ -126,10 +125,20 @@ class InstaSlotFinder:
 							 desired_capabilities=capabilities)
 		self.browser.delete_all_cookies()
 		self.browser.get(self.url)
-		time.sleep(5)
+		time.sleep(3)
 
 	@timeout.custom_decorator
 	def __login_insta_account__(self):
+		try:
+			xpath = '/html/body/div[2]/div'
+			status = self.browser.find_element_by_xpath(xpath).text
+			self.log_msg("\nINSTACART SITE DOWN, MSG : \n{}\n".format(status))
+			
+			self.close_connection()
+			sys.exit(0)
+		except Exception:
+			pass
+			
 		self.browser.find_element_by_link_text('Log in').click()
 		time.sleep(3)
 		xpath = '//*[@id="nextgen-authenticate.all.log_in_email"]'
