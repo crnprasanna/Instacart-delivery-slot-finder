@@ -123,8 +123,15 @@ This tool was created to help people who are at high risk and those needy ones (
 	
 	Also, logs will be printed on console
 	
+
+# Sample Email Notification : 
+
+
+![EMAIL NOTIFICATION](https://i.imgur.com/hm6rqb6.png)
+
+
 		
-# Sample Output: 
+# Sample Console Output: 
 
 	##########################################
 	(19:58:45) root | Going to init browser
