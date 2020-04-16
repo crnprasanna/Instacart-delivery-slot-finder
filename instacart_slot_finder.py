@@ -157,12 +157,12 @@ class InstaSlotFinder:
 		except timeout_decorator.TimeoutError:
 			self.logger.log("TIMEOUT ERROR WITH CHECK_DELIVERY_SLOT")
 			self.close_connection()
-			raise RuntimeError("Restart program")
+			raise Exception("Restart program")
 		except Exception as err:
 			self.logger.log('RUNTIME ERROR WITH CHECK_DELIVERY_SLOT, \
 			Err: {}'.format(err))
 			self.close_connection()
-			raise RuntimeError("Restart program")
+			raise Exception("Restart program")
 
 		return ('NO_SLOT' if self.no_slot_msg in status else status)
 
@@ -181,12 +181,12 @@ class InstaSlotFinder:
 			self.logger.log('TIMEOUT ERROR WITH GET_ADDRESS_BOOK \
 			Index {}'.format(default_index))
 			self.close_connection()
-			raise RuntimeError("Restart program")
+			raise Exception("Restart program")
 		except Exception as err:
 			self.logger.log('RUNTIME ERROR WITH GET_ADDRESS_BOOK Index {}, \
 			Err: {}'.format(default_index, err))
 			self.close_connection()
-			raise RuntimeError("Restart program")
+			raise Exception("Restart program")
 
 	def log_msg(self, msg):
 		self.logger.log(msg)
@@ -247,9 +247,13 @@ class InstaSlotFinder:
 						'button')[def_addr_index].text
 				return (def_addr_index, def_addr)
 		except Exception as err:
-			self.logger.log('NO ADDRESS FOUND IN INSTACART ACCOUNT, err: {}'.format(err))
-			self.close_connection()
-			sys.exit(0)
+			if 'stale element reference' in err:
+				raise Exception(err)
+			else:
+				self.logger.log('NO ADDRESS FOUND IN INSTACART ACCOUNT, err: {}'.format(err))
+				self.close_connection()
+				sys.exit(0)
+
 
 	@timeout.custom_decorator
 	def __find_slot_curr_addr__(self, def_index, curr_index):
@@ -335,7 +339,7 @@ class InstaSlotFinder:
 				self.slots_result += '\n'
 		except Exception:
 			self.close_connection()
-			raise RuntimeError("Restart program")
+			raise Exception("Restart program")
 
 		return slot_found_once
 
@@ -379,7 +383,10 @@ if __name__ == '__main__':
 			slot_finder.find_slots()
 			is_slot_found = slot_finder.log_results()
 		except Exception:
-			slot_finder.log_msg('\nCreating new instance..\n')
+			slot_finder.close_connection()
+			time.sleep(INTERVAL_BETWEEN_LOOPS)
+
+			slot_finder.log_msg('\nRUNTIME ERR HANDLED, Creating new instance..\n')
 			slot_finder = InstaSlotFinder()
 			slot_finder.start_browser(printCFG=False)
 			continue
