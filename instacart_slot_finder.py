@@ -62,18 +62,19 @@ class InstaSlotFinder:
 		sys.exit(0)
 
 	@timeout.custom_decorator
-	def start_browser(self):
-		self.logger.log('\n##########################################')
-		self.logger.log('Going to init browser')
-		self.logger.log('Input Config:')
-		self.logger.log('\tChrome driver path: {}'.format(
-			settings.CHROME_DRIVER_PATH))
-		self.logger.log('\tStores List: {}'.format(settings.STORE_LIST))
-		self.logger.log('\tInstacart Login: {}'.format(
-			settings.INSTA_LOGIN_EMAIL))
-		self.logger.log('\tSEND_GMAIL report: {}'.format(
-			settings.SEND_GMAIL))
-		self.logger.log('\n##########################################')
+	def start_browser(self, printCFG=True):
+		if printCFG:
+			self.logger.log('\n##########################################')
+			self.logger.log('Going to init browser')
+			self.logger.log('Input Config:')
+			self.logger.log('\tChrome driver path: {}'.format(
+				settings.CHROME_DRIVER_PATH))
+			self.logger.log('\tStores List: {}'.format(settings.STORE_LIST))
+			self.logger.log('\tInstacart Login: {}'.format(
+				settings.INSTA_LOGIN_EMAIL))
+			self.logger.log('\tSEND_GMAIL report: {}'.format(
+				settings.SEND_GMAIL))
+			self.logger.log('\n##########################################')
 
 		try:
 			self.__validate_store__()
@@ -263,12 +264,12 @@ class InstaSlotFinder:
 			self.logger.log('TIMEOUT ERROR WITH FINDING SLOT CURR ADDR {}, \
 			DEF ADDR {}'.format(curr_index, def_index))
 			self.close_connection()
-			raise RuntimeError("Restart program")
+			raise Exception("Timeout Error")
 		except Exception as err:
 			self.logger.log('RUNTIME ERROR WITH FIND SLOT CURR ADDR {}, \
 			DEF ADDR {}, Err: {}'.format(curr_index, def_index, err))
 			self.close_connection()
-			raise RuntimeError("Restart program")
+			raise Exception(err)
 
 	@timeout.custom_decorator
 	def find_slots(self):
@@ -303,9 +304,9 @@ class InstaSlotFinder:
 								default_address_id, button_id)
 
 				self.slots_dict[store] = self.delivery_slot.copy()
-		except Exception:
+		except Exception as err:
 			self.close_connection()
-			raise RuntimeError("Restart program")
+			raise Exception(err)
 
 	@timeout.custom_decorator
 	def log_results(self):
@@ -347,9 +348,8 @@ class InstaSlotFinder:
 		if self.browser:
 			self.browser.quit()
 			self.logger.log('Connection ended')
-
-		self.logger.log('\n##########################################')
-
+			self.browser = None
+			self.logger.log('\n##########################################')
 
 
 if __name__ == '__main__':
@@ -377,7 +377,7 @@ if __name__ == '__main__':
 		except Exception:
 			slot_finder.log_msg('\nCreating new instance..\n')
 			slot_finder = InstaSlotFinder()
-			slot_finder.start_browser()
+			slot_finder.start_browser(printCFG=False)
 			continue
 
 		if is_slot_found:
