@@ -169,7 +169,11 @@ Note: As I don't have personal macbook, I can't able to test. If you have one, p
 	
 # Known Issues:
 
-	NA
+	1. If you see this error "LOGIN ERROR, CHECK CREDENTIALS", even you have provided vaild username, password, it could mean sevaral things, but not limited to below:
+
+ 	- Instacart down / too slow to repond
+ 
+ 	- Instcart may updating their interface
 
 	
 # Disclaimer:

@@ -126,7 +126,7 @@ class InstaSlotFinder:
 							 desired_capabilities=capabilities)
 		self.browser.delete_all_cookies()
 		self.browser.get(self.url)
-		time.sleep(10)
+		time.sleep(5)
 
 	@timeout.custom_decorator
 	def __login_insta_account__(self):
@@ -144,7 +144,7 @@ class InstaSlotFinder:
 		login_title = self.browser.title
 		xpath = '//*[@id="main-content"]/div[2]/form/div[3]/button'
 		self.browser.find_element_by_xpath(xpath).click()
-		time.sleep(10)
+		time.sleep(3)
 		if login_title == self.browser.title:
 			raise Exception("Check instacart username/password")
 
