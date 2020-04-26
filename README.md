@@ -11,28 +11,38 @@ When checking with my friends and colleagues, I found most of us have the same p
 This tool was created to help people who are at high risk and those needy ones (including myself)
 
 
+	
+# Updates:
+
+      [4/25] Now supports MACOS. You can use it on MAC / WIN 10 / Ubuntu
+	  
+	
 # Cloning repro
 
-      git clone https://github.com/crnprasanna/Instacart-delivery-slot-finder.git
+      git clone https://github.com/crnprasanna/IndiaCashCarry_Slot_Finder.git
       
       Note: Make sure you get latest changes running command "git pull" before running each time
 
 
-	
 # Installation:
 
-1. Windows:
+1. MACOS:
+	
+          ./install_mac.sh # under 'install/' directory
 
-        a. Python : v3 and above and python pip3
-        b. Latest google chrome and chromedriver corresponding to chrome version installed
-	  
+ 
 2. Ubuntu:
 	
           sudo ./install_ubuntu.sh # under 'install/' directory
           **Note : This tool will auto upgrade chrome to latest version, if not installed on the host pc already
 	
+3. Windows:
+
+        a. Python : v3 and above and python pip3
+        b. Latest google chrome and chromedriver corresponding to chrome version installed
+
   
-3. Installing python modules:
+# Installing python modules:
 
           pip3 install -r requirements.txt
 		  
@@ -136,7 +146,7 @@ This tool was created to help people who are at high risk and those needy ones (
 	##########################################
 	(19:58:45) root | Going to init browser
 	(19:58:45) root | Input Config:
-	(19:58:45) root | 	Chrome driver path: C:\Users\user\Downloads\chromedriver_win32\chromedriver.exe
+	(19:58:45) root | 	Chrome driver path: /usr/local/bin/chromedriver
 	(19:58:45) root | 	Stores List: ['costco']
 	(19:58:45) root | 	Instacart Login: xxxx@gmail.com
 	(19:58:45) root | 	SEND_GMAIL report: True
@@ -157,9 +167,8 @@ This tool was created to help people who are at high risk and those needy ones (
 	##########################################
 
 # Tested platforms:
-Tested on Windows 10 and Ubuntu 16.04
+	Tested on MACOS , Ubuntu 16.04 and Windows 10
 
-Note: As I don't have personal macbook, I can't able to test. If you have one, please try on Mac and let me know if it works.
 
 # Tested tool versions:
 	Python3
@@ -183,3 +192,9 @@ Note: As I don't have personal macbook, I can't able to test. If you have one, p
 	Script may take longer time find slots as I don't have any control over Instacart slot availbality logic.
 
 	This tools is for personnal-noncommercial use only.
+
+
+# Feedback:
+
+	For feedback, feature support, bugs, please reach me out at - crn.prasanna@gmail.com
+
