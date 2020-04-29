@@ -196,5 +196,5 @@ This tool was created to help people who are at high risk and those needy ones (
 
 # Feedback:
 
-	For feedback, feature support, bugs, please reach me out [here](mailto:crn.prasanna@gmail.com?subject=[GitHub]%20Instacart%20Slot%20Finder-%20Feedback))
+Please reach me out [here](mailto:crn.prasanna@gmail.com?subject=[GitHub]%20Instacart%20Slot%20Finder-%20Feedback) for any suggestions / improvements / issues
 
