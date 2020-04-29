@@ -1,5 +1,5 @@
 # Instacart-delivery-slot-finder
-A Windows / Linux based python module to find Instacart slots and email you the status
+A MACOS / Windows / Linux based python module to find Instacart slots and email you the status
 
 # Inspirations:
 Personally I was stuck with COVID-19 pandaemic at home for getting my day to day essentials and started looking online grocery delivery services like Instacart and other similar platforms. 
@@ -14,7 +14,7 @@ This tool was created to help people who are at high risk and those needy ones (
 	
 # Updates:
 
-      [4/25] Now supports MACOS. You can use it on MAC / WIN 10 / Ubuntu
+      Now supports MACOS. You can use it on MAC / WIN 10 / Ubuntu
 	  
 	
 # Cloning repro
@@ -196,5 +196,5 @@ This tool was created to help people who are at high risk and those needy ones (
 
 # Feedback:
 
-	For feedback, feature support, bugs, please reach me out at - crn.prasanna@gmail.com
+	For feedback, feature support, bugs, please reach me out [here](mailto:crn.prasanna@gmail.com?subject=[GitHub]%20Instacart%20Slot%20Finder-%20Feedback))
 
